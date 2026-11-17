@@ -1,7 +1,7 @@
 /* =========================================================================
    Fecha: Octubre 2026
    Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Descripción: ENTREGA 5 COMPLETA - CORREGIDA SEGÚN DER FINAL
+   Descripción: ENTREGA 5 COMPLETA 
    Incluye:
    - DDL (Creación de todas las tablas según DER).
    - SPs ABM (Altas encapsuladas).
@@ -88,7 +88,7 @@ CREATE TABLE op.Jugador (
     Nacionalidad VARCHAR(50) NOT NULL
 );
 
--- 3. Convocatorias y Modificaciones (Altas/Bajas) - [NUEVO REQUERIMIENTO]
+-- 3. Convocatorias y Modificaciones (Altas/Bajas)
 CREATE TABLE op.Convocado (
     IdConvocado INT IDENTITY(1,1) PRIMARY KEY,
     IdSeleccion INT NOT NULL FOREIGN KEY REFERENCES op.Seleccion(IdSeleccion),
@@ -103,7 +103,7 @@ CREATE TABLE op.Modificacion_Convocatoria (
     Fecha DATE NOT NULL
 );
 
--- 4. Cuerpo Técnico - [NUEVO SEGÚN DER]
+-- 4. Cuerpo Técnico 
 CREATE TABLE op.CuerpoTecnico (
     IdCuerpoTecnico INT IDENTITY(1,1) PRIMARY KEY,
     IdSeleccion INT NOT NULL FOREIGN KEY REFERENCES op.Seleccion(IdSeleccion),
@@ -127,7 +127,7 @@ CREATE TABLE op.Alineacion_Jugador (
     PRIMARY KEY (IdAlineacion, IdJugador)
 );
 
--- Cambios durante el partido - [NUEVO REQUERIMIENTO]
+-- Cambios durante el partido
 CREATE TABLE op.Cambios (
     IdCambio INT IDENTITY(1,1) PRIMARY KEY,
     IdPartido INT NOT NULL FOREIGN KEY REFERENCES op.Partido(IdPartido),
@@ -289,7 +289,7 @@ BEGIN
 END;
 GO
 
--- Procedimiento para Registrar un Cambio de Jugador [NUEVO]
+-- Procedimiento para Registrar un Cambio de Jugador 
 CREATE OR ALTER PROCEDURE op.usp_RegistrarCambioJugador
     @IdPartido INT,
     @IdJugadorSaliente INT,
@@ -318,7 +318,7 @@ BEGIN
 END;
 GO
 
--- Procedimiento para Altas/Bajas de Último Momento (Convocatorias) [NUEVO]
+-- Procedimiento para Altas/Bajas de Último Momento (Convocatorias) 
 CREATE OR ALTER PROCEDURE op.usp_ModificarConvocatoria
     @IdConvocado INT,
     @Tipo VARCHAR(10),
@@ -344,7 +344,7 @@ BEGIN
 END;
 GO
 
--- Procedimiento para Simular Importación de Datos [NUEVO]
+-- Procedimiento para Simular Importación de Datos
 CREATE OR ALTER PROCEDURE cfg.usp_ImportarDatosExternos
 AS
 BEGIN
