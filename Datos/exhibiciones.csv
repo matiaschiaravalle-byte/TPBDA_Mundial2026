@@ -1,0 +1,5 @@
+IdEspacio;IdPartido;IdPieza;Tarifa;Moneda
+1;2;1;18.50;USD
+2;2;2;15.00;EUR
+ABC;2;3;10.00;USD
+3;2;3;20.00;ZZZ

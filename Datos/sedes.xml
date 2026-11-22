@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sedes>
+    <Sede>
+        <NombreEstadio>MetLife Stadium</NombreEstadio>
+        <Ciudad>New York / New Jersey</Ciudad>
+        <Pais>Estados Unidos</Pais>
+        <UsoHorario>UTC-5</UsoHorario>
+        <Capacidad>82500</Capacidad>
+    </Sede>
+    <Sede>
+        <NombreEstadio>Maracaná</NombreEstadio>
+        <Ciudad>Río de Janeiro</Ciudad>
+        <Pais>Brasil</Pais>
+        <UsoHorario>UTC-3</UsoHorario>
+        <Capacidad>78838</Capacidad>
+    </Sede>
+    <Sede>
+        <NombreEstadio>Estadio Error</NombreEstadio>
+        <Ciudad>Ciudad Fantasma</Ciudad>
+        <Pais>PaisInexistente</Pais>
+        <UsoHorario>UTC+0</UsoHorario>
+        <Capacidad>50000</Capacidad>
+    </Sede>
+</Sedes>

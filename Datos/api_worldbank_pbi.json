@@ -1,0 +1,9 @@
+[
+  { "page": 1, "pages": 1, "per_page": 50, "total": 4 },
+  [
+    { "country": { "id": "AR", "value": "Argentina" }, "date": "2023", "value": 13709.04 },
+    { "country": { "id": "BR", "value": "Brazil" }, "date": "2023", "value": 10043.62 },
+    { "country": { "id": "US", "value": "United States" }, "date": "2023", "value": 81695.19 },
+    { "country": { "id": "IT", "value": "Italy" }, "date": "2023", "value": 38373.17 }
+  ]
+]
