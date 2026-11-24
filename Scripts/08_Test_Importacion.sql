@@ -14,7 +14,7 @@
 USE Mundial2026;
 GO
 
-DECLARE @CarpetaDatos VARCHAR(255) = 'C:\Users\Agustin\Desktop\TP MUNDIAL\TPBDA_Mundial2026\Datos';
+DECLARE @CarpetaDatos VARCHAR(255) = 'C:\Users\Agustin\Desktop\TP MUNDIAL\TPBDA_Mundial2026\Datos\';
 DECLARE @RutaJugadores VARCHAR(255) = @CarpetaDatos + 'jugadores.csv';
 DECLARE @RutaExhibiciones VARCHAR(255) = @CarpetaDatos + 'exhibiciones.csv';
 DECLARE @RutaSedesXML VARCHAR(255) = @CarpetaDatos + 'sedes.xml';

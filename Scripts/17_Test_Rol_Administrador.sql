@@ -2,10 +2,9 @@
    Universidad: Universidad Nacional de La Matanza (UNLaM)
    Materia: 3641 - Bases de Datos Aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: ENTREGA 8 - Script de TESTING para usr_admin (rol_administrador).
-             Verifica que el administrador puede:
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Resumen: Script de testing para usr_admin (rol_administrador).
+             Verifica que el administrador pueda:
              - Ejecutar ABM y cifrar un nuevo jugador al darlo de alta.
              - Consultar datos sensibles descifrados (op.usp_ConsultarDatosSensibles).
              - Ejecutar reportes del esquema rpt.
@@ -14,11 +13,11 @@
 USE Mundial2026;
 GO
 
-PRINT '================ TEST 17: usr_admin (rol_administrador) ================';
+PRINT '================ TEST usr_admin (rol_administrador) ================';
 
 EXECUTE AS USER = 'usr_admin';
 
--- [PERMITIDO 1] Consultar datos sensibles descifrados (evidencia de cifrado + descifrado)
+-- PERMITIDO Consultar datos sensibles descifrados (evidencia de cifrado + descifrado)
 -- Resultado esperado: Muestra DocumentoCifrado (binario 0x...) y DocumentoDescifrado legible.
 BEGIN TRY
     EXEC op.usp_ConsultarDatosSensibles @Entidad = 'Jugador';
@@ -29,7 +28,7 @@ BEGIN CATCH
     PRINT 'ERROR INESPERADO [Admin - Cifrado]: ' + ERROR_MESSAGE();
 END CATCH;
 
--- [PERMITIDO 2] Alta de jugador con documento (se guarda cifrado automáticamente)
+-- PERMITIDO Alta de jugador con documento (se guarda cifrado automáticamente)
 -- Resultado esperado: Éxito (se hace ROLLBACK al final para no ensuciar los datos del torneo).
 BEGIN TRY
     BEGIN TRANSACTION;
@@ -56,5 +55,5 @@ BEGIN CATCH
 END CATCH;
 
 REVERT;
-PRINT '================ FIN TEST 17 ================';
+PRINT '================ FIN TEST ================';
 GO

@@ -2,12 +2,10 @@
    Universidad: Universidad Nacional de La Matanza (UNLaM)
    Materia: 3641 - Bases de Datos Aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: ENTREGA 7 - Script de TESTING 1:1 para 10_SP_FinalizarPartido_E7.sql.
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Resumen: Script de testing para 10_SP_FinalizarPartido_E7.sql.
              Usa dos selecciones de prueba propias (sin grupo, para no alterar
              la tabla de posiciones) y al final borra todos los datos que creó.
-             Ejecutar después de 01 a 12.
 ========================================================================= */
 
 USE Mundial2026;
@@ -15,9 +13,8 @@ GO
 
 SET NOCOUNT ON;
 
-/* ---------------------------------------------------------------------
-   Preparación
-   --------------------------------------------------------------------- */
+--Preparación
+
 DECLARE @IdConf INT = (SELECT MIN(IdConfederacion) FROM cfg.Confederacion);
 DECLARE @IdClub INT = (SELECT MIN(IdClub) FROM op.Club);
 DECLARE @IdSede INT = (SELECT IdSede FROM op.Sede WHERE NombreEstadio = 'BC Place');
@@ -67,9 +64,8 @@ INSERT INTO op.Partido (IdSede, IdSeleccionLocal, IdSeleccionVisitante, Fecha, H
 VALUES (@IdSede, @IdSelA, @IdSelB, '2026-08-05', '12:00', '19:00', 'Cuartos');
 SET @IdPartido2 = SCOPE_IDENTITY();
 
-/* ---------------------------------------------------------------------
-   Casos de validación
-   --------------------------------------------------------------------- */
+
+-- Casos de validación
 PRINT '--- FinalizarPartido | Partido inexistente y público negativo';
 -- Resultado esperado: ERROR con un único mensaje: el partido no existe y el público no puede ser negativo.
 BEGIN TRY
@@ -102,10 +98,10 @@ BEGIN CATCH
     PRINT '   >> OK, error esperado: ' + ERROR_MESSAGE();
 END CATCH;
 
-/* ---------------------------------------------------------------------
+/*
    Preparación del caso exitoso: alineaciones (11 titulares, el dorsal 13 de A
    queda fuera) y una suspensión del dorsal 13 de A originada en un partido anterior.
-   --------------------------------------------------------------------- */
+*/
 SET @Lado = 1;
 WHILE @Lado <= 4
 BEGIN
@@ -164,9 +160,9 @@ BEGIN CATCH
     PRINT '   >> ERROR INESPERADO: ' + ERROR_MESSAGE();
 END CATCH;
 
-/* ---------------------------------------------------------------------
-   Limpieza: se borran los datos de prueba para no alterar los reportes
-   --------------------------------------------------------------------- */
+/*
+   se borran los datos de prueba para no alterar los reportes
+*/
 DELETE FROM op.Anotacion WHERE IdPartido IN (@IdPartido1, @IdPartido2);
 DELETE FROM op.Alineacion_Jugador WHERE IdAlineacion IN (SELECT IdAlineacion FROM op.Alineacion WHERE IdPartido IN (@IdPartido1, @IdPartido2));
 DELETE FROM op.Alineacion WHERE IdPartido IN (@IdPartido1, @IdPartido2);

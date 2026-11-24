@@ -2,16 +2,13 @@
    Universidad: Universidad Nacional de La Matanza (UNLaM)
    Materia: 3641 - Bases de Datos Aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: ENTREGA 8 - Creación de Roles de Seguridad, Usuarios y Permisos
-             Granulares mediante SP (cfg.usp_ConfigurarSeguridadRoles).
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Objetivo: Creación de Roles de Seguridad, Usuarios y Permisos mediante SP (cfg.usp_ConfigurarSeguridadRoles).
              Roles creados (4):
              1. rol_administrador       (usr_admin)
              2. rol_cargador_resultados (usr_cargador)
              3. rol_gestor_publicidad   (usr_publicidad)
              4. rol_consulta            (usr_consulta)
-             Ejecutar después de 15_Cifrado_E8.sql.
 ========================================================================= */
 
 USE Mundial2026;
@@ -40,18 +37,18 @@ BEGIN
     ALTER ROLE rol_gestor_publicidad   ADD MEMBER usr_publicidad;
     ALTER ROLE rol_consulta            ADD MEMBER usr_consulta;
 
-    -- =====================================================================
-    -- 4. PERMISOS GRANULARES POR ROL
-    -- =====================================================================
+    
+    -- PERMISOS POR ROL
+    
 
-    -- 4.1 rol_administrador: control total sobre los esquemas y claves de cifrado
+    --  rol_administrador: control total sobre los esquemas y claves de cifrado
     GRANT CONTROL ON SCHEMA::op  TO rol_administrador;
     GRANT CONTROL ON SCHEMA::cfg TO rol_administrador;
     GRANT CONTROL ON SCHEMA::rpt TO rol_administrador;
     GRANT CONTROL ON CERTIFICATE::Cert_Mundial2026 TO rol_administrador;
     GRANT CONTROL ON SYMMETRIC KEY::Key_DatosSensibles TO rol_administrador;
 
-    -- 4.2 rol_cargador_resultados: sólo SPs operativos de partidos y resultados
+    -- rol_cargador_resultados: sólo SPs operativos de partidos y resultados
     GRANT EXECUTE ON op.usp_AltaPartido TO rol_cargador_resultados;
     GRANT EXECUTE ON op.usp_ModificarPartido TO rol_cargador_resultados;
     GRANT EXECUTE ON op.usp_RegistrarAlineacion TO rol_cargador_resultados;
@@ -63,7 +60,7 @@ BEGIN
     GRANT EXECUTE ON op.usp_FinalizarPartido TO rol_cargador_resultados;
     GRANT EXECUTE ON rpt.usp_Resultados TO rol_cargador_resultados;
 
-    -- 4.3 rol_gestor_publicidad: sólo SPs y reportes de publicidad
+    -- rol_gestor_publicidad: sólo SPs y reportes de publicidad
     GRANT EXECUTE ON cfg.usp_AltaAnunciante TO rol_gestor_publicidad;
     GRANT EXECUTE ON cfg.usp_ModificarAnunciante TO rol_gestor_publicidad;
     GRANT EXECUTE ON cfg.usp_AltaCampania TO rol_gestor_publicidad;
@@ -80,7 +77,7 @@ BEGIN
     GRANT SELECT ON cfg.Pieza_Pais TO rol_gestor_publicidad;
     GRANT EXECUTE ON op.fn_EsPrimeTime TO rol_gestor_publicidad;
 
-    -- 4.4 rol_consulta: sólo ejecución de reportes (esquema rpt)
+    -- rol_consulta: sólo ejecución de reportes (esquema rpt)
     GRANT EXECUTE ON SCHEMA::rpt TO rol_consulta;
     -- Permisos mínimos de lectura requeridos por el PIVOT dinámico de rpt.usp_MatrizPrimeTime
     GRANT SELECT ON op.Partido TO rol_consulta;

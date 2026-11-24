@@ -2,45 +2,42 @@
    Universidad: Universidad Nacional de La Matanza (UNLaM)
    Materia: 3641 - Bases de Datos Aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: Script auxiliar para la defensa de la Entrega 6:
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Objetivo: Script auxiliar:
              1) Web Scraping real de Wikipedia (List of FIFA World Cup referees)
                 -> genera Datos\arbitros_scraping.csv
-             2) Consumo en vivo de API 1 (Frankfurter - tipo de cambio)
-                -> guarda Datos\api_frankfurter.json (sin API key)
-             3) Consumo en vivo de API 2 (Banco Mundial - PBI per cápita)
-                -> guarda Datos\api_worldbank_pbi.json (sin API key)
+             2) Consumo de API 1 (Frankfurter - tipo de cambio)
+                -> guarda Datos\api_frankfurter.json
+             3) Consumo de API 2 (Banco Mundial - PBI per cápita)
+                -> guarda Datos\api_worldbank_pbi.json
 ========================================================================= #>
 
 $CarpetaDatos = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-# -------------------------------------------------------------------------
+
 # 1. API 1: Frankfurter (Tipo de cambio base USD)
 #    URL: https://api.frankfurter.app/latest?from=USD&to=EUR,BRL,MXN,GBP
-#    API Key: NO requiere | Rate limit: uso justo (sin límite estricto)
-# -------------------------------------------------------------------------
+
 Write-Host "Descargando API 1 (Frankfurter - Tipo de Cambio)..." -ForegroundColor Cyan
 $UrlFrankfurter = "https://api.frankfurter.app/latest?from=USD&to=EUR,BRL,MXN,GBP"
 Invoke-WebRequest -Uri $UrlFrankfurter -OutFile (Join-Path $CarpetaDatos "api_frankfurter.json") -UseBasicParsing
 Write-Host "  -> Guardado en api_frankfurter.json" -ForegroundColor Green
 
-# -------------------------------------------------------------------------
+
 # 2. API 2: Banco Mundial (Indicador NY.GDP.PCAP.CD - PBI per cápita)
 #    URL: https://api.worldbank.org/v2/country/ARG;BRA;USA;ITA;ESP;FRA/indicator/NY.GDP.PCAP.CD?format=json&date=2023
-#    API Key: NO requiere | Rate limit: público abierto (<100 req/min recomendado)
-# -------------------------------------------------------------------------
+
 Write-Host "Descargando API 2 (Banco Mundial - PBI per cápita)..." -ForegroundColor Cyan
 $UrlWorldBank = "https://api.worldbank.org/v2/country/ARG;BRA;USA;ITA;ESP;FRA/indicator/NY.GDP.PCAP.CD?format=json&date=2023"
 Invoke-WebRequest -Uri $UrlWorldBank -OutFile (Join-Path $CarpetaDatos "api_worldbank_pbi.json") -UseBasicParsing
 Write-Host "  -> Guardado en api_worldbank_pbi.json" -ForegroundColor Green
 
-# -------------------------------------------------------------------------
+
 # 3. WEB SCRAPING: Wikipedia - List of FIFA World Cup referees
 #    URL: https://en.wikipedia.org/wiki/List_of_FIFA_World_Cup_referees
-#    Técnica: Descarga HTML con Invoke-WebRequest y extracción de filas de
-#             tablas wikitable mediante expresiones regulares (regex) en PowerShell.
-# -------------------------------------------------------------------------
+#    Descarga HTML con Invoke-WebRequest y extrae filas de
+#    tablas wikitable a través de expresiones regulares (regex) en PowerShell.
+
 Write-Host "Haciendo Web Scraping de Wikipedia (Árbitros Mundialistas)..." -ForegroundColor Cyan
 $UrlWiki = "https://en.wikipedia.org/wiki/List_of_FIFA_World_Cup_referees"
 $Headers = @{ "User-Agent" = "UNLaM-BDA-TP-Mundial2026/1.0" }

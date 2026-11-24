@@ -8,7 +8,6 @@
              - 9 sedes en 3 países y 4 husos horarios distintos, con 4 espacios.
              - Fase de grupos completa + cuartos, semifinales, 3er puesto y final.
              - 18 árbitros, 8 anunciantes de 7 países con campañas y piezas.
-             - Todos los casos obligatorios del enunciado..
 ========================================================================= */
 
 USE Mundial2026;
@@ -25,9 +24,7 @@ END;
 DECLARE @IdBase INT = ISNULL((SELECT MAX(IdPartido) FROM op.Partido), 0);
 DECLARE @i INT, @n INT, @k INT, @d INT, @s INT, @Cant INT;
 
-/* =====================================================================
-   1. CATÁLOGOS
-   ===================================================================== */
+-- 1. CATÁLOGOS
 IF NOT EXISTS (SELECT 1 FROM cfg.Regla_Suspencion)
     INSERT INTO cfg.Regla_Suspencion (Canti_requerida, Partidos_suspension, Fase_Limpieza) VALUES (2, 1, 'Semifinal');
 
@@ -78,11 +75,11 @@ FROM (VALUES ('CONMEBOL', 'América del Sur'), ('UEFA', 'Europa'), ('CONCACAF', 
              ('CAF', 'África'), ('AFC', 'Asia')) v(Nombre, Continente)
 WHERE NOT EXISTS (SELECT 1 FROM cfg.Confederacion c WHERE c.Nombre = v.Nombre);
 
-/* =====================================================================
+/*
    2. PAÍSES (selecciones + mercados publicitarios)
    OffsetUTC: huso vigente en junio-julio. PbiPerCapita: valores de referencia
    aproximados en USD (los existentes de la entrega 5 no se modifican).
-   ===================================================================== */
+*/
 DECLARE @Paises TABLE (Nombre VARCHAR(100), OffsetUTC INT, Pbi DECIMAL(12,2), Idioma VARCHAR(50),
                        Confederacion VARCHAR(100) NULL, Grupo CHAR(1) NULL, Pos INT NULL);
 INSERT INTO @Paises VALUES
@@ -121,9 +118,9 @@ INNER JOIN op.Pais pa ON pa.Nombre = p.Nombre
 INNER JOIN cfg.Idioma i ON i.Descripcion = p.Idioma
 WHERE NOT EXISTS (SELECT 1 FROM cfg.Pais_Idioma x WHERE x.IdPais = pa.IdPais AND x.IdIdioma = i.IdIdioma);
 
-/* =====================================================================
-   3. SELECCIONES, PLANTELES Y CLUBES
-   ===================================================================== */
+/*
+   SELECCIONES, PLANTELES Y CLUBES
+*/
 INSERT INTO op.Seleccion (IdPais, IdConfederacion, Grupo)
 SELECT pa.IdPais, c.IdConfederacion, p.Grupo
 FROM @Paises p
@@ -154,10 +151,10 @@ DECLARE @Clubes TABLE (Nro INT PRIMARY KEY, IdClub INT);
 INSERT INTO @Clubes (Nro, IdClub) SELECT ROW_NUMBER() OVER (ORDER BY IdClub) - 1, IdClub FROM op.Club;
 DECLARE @CantClubes INT = (SELECT COUNT(*) FROM @Clubes);
 
-/* =====================================================================
-   4. JUGADORES (24 por selección) con op.usp_AltaJugador
+/*
+   JUGADORES (24 por selección) con op.usp_AltaJugador
    Dorsales 1, 12 y 23: arqueros. Se respetan los jugadores ya cargados.
-   ===================================================================== */
+*/
 DECLARE @Nombres TABLE (Idx INT PRIMARY KEY, Nombre VARCHAR(100));
 INSERT INTO @Nombres VALUES (0,'Mateo'),(1,'Santiago'),(2,'Lucas'),(3,'Tomás'),(4,'Martín'),(5,'Nicolás'),(6,'Diego'),
     (7,'Gabriel'),(8,'Andrés'),(9,'Pablo'),(10,'Hugo'),(11,'Leo'),(12,'Daniel'),(13,'Adrián'),(14,'Bruno'),(15,'Iván'),
@@ -222,11 +219,11 @@ INNER JOIN @Nombres n ON n.Idx = (s.Nro * 7 + t.Desfase * 3) % 20
 INNER JOIN @Apellidos a ON a.Idx = (s.Nro * 11 + t.Desfase * 5) % 24
 WHERE NOT EXISTS (SELECT 1 FROM op.CuerpoTecnico ct WHERE ct.IdSeleccion = s.IdSeleccion AND ct.Tipo = t.Tipo);
 
-/* =====================================================================
-   5. ALTAS Y BAJAS DE ÚLTIMO MOMENTO (op.usp_ModificarConvocatoria)
+/* 
+   ALTAS Y BAJAS DE ÚLTIMO MOMENTO (op.usp_ModificarConvocatoria)
    - Brasil: baja del dorsal 20 por lesión y alta de un reemplazo (dorsal 25).
    - Japón: baja del dorsal 18 sin reemplazo (queda con 23).
-   ===================================================================== */
+*/
 DECLARE @IdConvocado INT, @IdPlBrasil INT, @IdSelBrasil INT, @IdPlJapon INT;
 SELECT @IdPlBrasil = IdPlantel, @IdSelBrasil = IdSeleccion FROM @Selecciones WHERE Pais = 'Brasil';
 SELECT @IdPlJapon = IdPlantel FROM @Selecciones WHERE Pais = 'Japón';
@@ -250,9 +247,9 @@ WHERE j.IdPlantel = @IdPlJapon AND j.Dorsal = 18;
 IF @IdConvocado IS NOT NULL
     EXEC op.usp_ModificarConvocatoria @IdConvocado = @IdConvocado, @Tipo = 'Baja', @Motivo = 'Desgarro', @Fecha = '2026-06-09';
 
-/* =====================================================================
-   6. SEDES Y ESPACIOS PUBLICITARIOS
-   ===================================================================== */
+/*
+    SEDES Y ESPACIOS PUBLICITARIOS
+*/
 DECLARE @Sedes TABLE (Orden INT PRIMARY KEY, Estadio VARCHAR(100), Ciudad VARCHAR(100), Pais VARCHAR(100),
                       OffsetUTC INT, Capacidad INT, IdSede INT NULL);
 INSERT INTO @Sedes (Orden, Estadio, Ciudad, Pais, OffsetUTC, Capacidad) VALUES
@@ -282,9 +279,9 @@ CROSS JOIN (VALUES (1), (2), (3), (4)) e(Nro)
 WHERE NOT EXISTS (SELECT 1 FROM op.EspacioPublicitario ep WHERE ep.IdSede = s.IdSede)
 ORDER BY s.Orden, e.Nro;
 
-/* =====================================================================
-   7. ÁRBITROS (se suman a los 6 de la entrega 5)
-   ===================================================================== */
+/*
+    ÁRBITROS
+*/
 INSERT INTO op.Arbitro (Nombre, Apellido, Nacionalidad, Categoria, Documento, FechaNacimiento)
 SELECT v.Nombre, v.Apellido, v.Nacionalidad, 'FIFA', CONCAT('ARB-', v.Nro), DATEADD(YEAR, -(36 + v.Nro % 9), CAST('2026-01-01' AS DATE))
 FROM (VALUES (1, 'Rodrigo', 'Almada', 'Uruguay'), (2, 'Sérgio', 'Castanheira', 'Brasil'), (3, 'Laurent', 'Bessière', 'Francia'),
@@ -306,10 +303,10 @@ INNER JOIN cfg.Idioma i ON i.Descripcion IN ('Inglés',
             WHEN a.Nacionalidad = 'Catar' THEN 'Árabe' ELSE 'Inglés' END)
 WHERE NOT EXISTS (SELECT 1 FROM cfg.Arbitro_Idioma x WHERE x.IdArbitro = a.IdArbitro AND x.IdIdioma = i.IdIdioma);
 
-/* =====================================================================
-   8. PUBLICIDAD: anunciantes de 7 países, campañas, piezas y mercados
+/*
+   PUBLICIDAD: anunciantes de 7 países, campañas, piezas y mercados
    Tarifas por franja en ARS (moneda base de cfg.Cotizacion_Moneda).
-   ===================================================================== */
+*/
 DECLARE @Anunciantes TABLE (Nro INT PRIMARY KEY, RazonSocial VARCHAR(100), Pais VARCHAR(100), Campania VARCHAR(100), IdCampania INT NULL);
 INSERT INTO @Anunciantes (Nro, RazonSocial, Pais, Campania) VALUES
     (1, 'Bebidas Andinas S.A.',        'Argentina',      'Mundial 2026 - Brindá con tu selección'),
@@ -379,11 +376,11 @@ FROM @PiezaMercados m
 INNER JOIN @Piezas p ON p.Nro = m.NroPieza
 INNER JOIN op.Pais pa ON pa.Nombre = m.Pais;
 
-/* =====================================================================
-   9. FIXTURE DE LA FASE DE GRUPOS (todos contra todos, 3 fechas)
+/*
+   FIXTURE DE LA FASE DE GRUPOS
    Dos partidos por día: 19:00 y 23:00 UTC. Las sedes rotan.
-   Si un cruce de grupo ya existía (datos de la entrega 5) no se duplica.
-   ===================================================================== */
+   Si un cruce de grupo ya existía no se duplica.
+*/
 INSERT INTO op.Partido (IdSede, IdSeleccionLocal, IdSeleccionVisitante, Fecha, HoraLocal, HoraUTC, Fase)
 SELECT ss.IdSede, f.IdLocal, f.IdVisitante, f.Fecha, DATEADD(HOUR, ss.OffsetUTC, f.HoraUTC), f.HoraUTC, 'Grupos'
 FROM (
@@ -407,14 +404,14 @@ FROM (
 INNER JOIN @Sedes ss ON ss.Orden = (f.Nro - 1) % 9 + 1
 ORDER BY f.Fecha, f.HoraUTC;
 
-/* =====================================================================
-   10. SIMULACIÓN DE LOS PARTIDOS
+/*
+   SIMULACIÓN DE LOS PARTIDOS
    Se procesan en orden cronológico los partidos sin alineación ni cierre.
    Cuando no quedan partidos pendientes se arma la fase siguiente a partir de
    los resultados (cuartos -> semifinales -> tercer puesto y final).
    Los valores (goles, tarjetas, árbitros) se derivan del Id del partido, de
    modo que la carga es reproducible.
-   ===================================================================== */
+*/
 DECLARE @IdP INT, @IdSede INT, @IdLoc INT, @IdVis INT, @Fase VARCHAR(50), @Fecha DATE, @HoraUTC TIME, @Capacidad INT;
 DECLARE @Seq INT = 0, @Lado INT, @IdSelX INT, @IdPl INT, @IdAlineacion INT, @AlLoc INT, @AlVis INT;
 DECLARE @Tit BIT, @Dorsal INT, @Goles INT, @GL INT, @GV INT, @Alargue BIT, @Minuto INT, @Periodo INT, @Tipo INT;
@@ -746,9 +743,9 @@ BEGIN
     END CATCH;
 END;
 
-/* =====================================================================
-   11. RESUMEN DE LA CARGA
-   ===================================================================== */
+/*
+    RESUMEN DE LA CARGA
+*/
 SELECT 'Sedes' AS Dato, COUNT(*) AS Cantidad FROM op.Sede
 UNION ALL SELECT 'Husos horarios distintos de sedes', COUNT(DISTINCT UsoHorario) FROM op.Sede
 UNION ALL SELECT 'Selecciones', COUNT(*) FROM op.Seleccion

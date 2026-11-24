@@ -2,12 +2,8 @@
    Universidad: Universidad Nacional de La Matanza (UNLaM)
    Materia: 3641 - Bases de Datos Aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: ENTREGA 7 - Script de TESTING 1:1 para 11_SP_Reportes_E7.sql.
-             Para cada uno de los 7 reportes: ejecuciones exitosas (con filtros
-             y formatos) y casos de validaciones fallidas con resultado esperado
-             en comentarios. Ejecutar después de 01 a 12.
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Resumen: Script de testing para 11_SP_Reportes_E7.sql para cada uno de los 7 reportes.
 ========================================================================= */
 
 USE Mundial2026;
@@ -25,7 +21,7 @@ DECLARE @IdFinal INT = (SELECT MAX(IdPartido) FROM op.Partido WHERE Fase = 'Fina
 DECLARE @IdArbitro INT = (SELECT TOP (1) IdArbitroPrincipal FROM op.Lista_Arbitros ORDER BY IdPartido);
 
 /* =====================================================================
-   1. rpt.usp_Goleadores
+   rpt.usp_Goleadores
    ===================================================================== */
 PRINT '--- Goleadores | Torneo (top 5)';
 -- Resultado esperado: ranking general con los jugadores de los 5 primeros puestos (empates comparten puesto).
@@ -61,7 +57,7 @@ BEGIN CATCH
 END CATCH;
 
 /* =====================================================================
-   2. rpt.usp_Tarjetas
+   rpt.usp_Tarjetas
    ===================================================================== */
 PRINT '--- Tarjetas | Todas las selecciones';
 -- Resultado esperado: 3 grillas. (1) totales por selección: hay al menos una expulsión por doble amarilla y una
@@ -110,7 +106,7 @@ BEGIN CATCH
 END CATCH;
 
 /* =====================================================================
-   3. rpt.usp_DesignacionesArbitrales (XML)
+   rpt.usp_DesignacionesArbitrales (XML)
    ===================================================================== */
 PRINT '--- Designaciones arbitrales | Todos los árbitros designados (XML)';
 -- Resultado esperado: un XML <DesignacionesArbitrales> con un <Arbitro> por árbitro designado, sus <Partido> con el
@@ -142,7 +138,7 @@ BEGIN CATCH
 END CATCH;
 
 /* =====================================================================
-   4. rpt.usp_OcupacionPublicitaria
+   rpt.usp_OcupacionPublicitaria
    ===================================================================== */
 PRINT '--- Ocupación publicitaria | Todas las sedes';
 -- Resultado esperado: 3 grillas: detalle de los 4 espacios por partido, resumen por partido (100% de ocupación en los
@@ -183,7 +179,7 @@ BEGIN CATCH
 END CATCH;
 
 /* =====================================================================
-   5. rpt.usp_MatrizPrimeTime
+   rpt.usp_MatrizPrimeTime
    ===================================================================== */
 PRINT '--- Matriz de prime time | Todos los partidos, mercados con publicidad';
 -- Resultado esperado: una fila por partido y una columna por mercado con "Sí" cuando el partido cae entre las 19 y
@@ -215,7 +211,7 @@ BEGIN CATCH
 END CATCH;
 
 /* =====================================================================
-   6. rpt.usp_SeleccionesPlantillas (XML)
+   rpt.usp_SeleccionesPlantillas (XML)
    ===================================================================== */
 PRINT '--- Selecciones y plantillas | Todas (XML)';
 -- Resultado esperado: XML <Selecciones> con 16 <Seleccion> (grupo, confederación, cantidad de convocados vigentes),
@@ -247,7 +243,7 @@ BEGIN CATCH
 END CATCH;
 
 /* =====================================================================
-   7. rpt.usp_Resultados
+   rpt.usp_Resultados
    ===================================================================== */
 PRINT '--- Resultados | Todos los partidos (tabla) y posiciones';
 -- Resultado esperado: (1) todos los partidos con resultado, ganador y goleadores (los no jugados figuran "Pendiente");
@@ -280,5 +276,5 @@ BEGIN CATCH
     PRINT '   >> OK, error esperado: ' + ERROR_MESSAGE();
 END CATCH;
 
-PRINT '=== Fin del testing de 03_E7_SP_Reportes ===';
+PRINT '=== Fin del test===';
 GO

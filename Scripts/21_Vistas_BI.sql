@@ -2,20 +2,18 @@
    Universidad: Universidad Nacional de La Matanza (UNLaM)
    Materia: 3641 - Bases de Datos Aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: ENTREGA 9 - Vistas planas de soporte para conectar Metabase (BI)
-             y armar gráficos directos sobre los reportes de la Entrega 7:
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Resumen: Vistas planas de soporte para conectar Metabase (BI)
+             y armar gráficos directos sobre los reportes del script 11_SP_Reportes:
              1. rpt.vw_BI_Goleadores
              2. rpt.vw_BI_IngresosPublicidad_Sede
              3. rpt.vw_BI_Tarjetas_Seleccion
-             Ejecutar después de 01 a 14 (o 20).
 ========================================================================= */
 
 USE Mundial2026;
 GO
 
--- 1. Goleadores del torneo (sin goles en contra) -> ideal para Gráfico de Barras
+--Goleadores del torneo (sin goles en contra)
 CREATE OR ALTER VIEW rpt.vw_BI_Goleadores
 AS
 SELECT CONCAT(j.Nombre, ' ', j.Apellido) AS Jugador,
@@ -32,7 +30,7 @@ WHERE tj.Descripcion <> 'En contra'
 GROUP BY j.IdJugador, j.Nombre, j.Apellido, pa.Nombre;
 GO
 
--- 2. Ingresos y ocupación publicitaria por sede (ARS y USD) -> ideal para Gráfico de Torta / Barras
+-- Ingresos y ocupación publicitaria por sede (ARS y USD)
 CREATE OR ALTER VIEW rpt.vw_BI_IngresosPublicidad_Sede
 AS
 SELECT s.NombreEstadio AS Sede,
@@ -47,7 +45,7 @@ LEFT JOIN op.Exhibicion x ON x.IdPartido = p.IdPartido
 GROUP BY s.IdSede, s.NombreEstadio, s.Ciudad;
 GO
 
--- 3. Tarjetas por selección -> ideal para Gráfico de Barras Apiladas
+-- Tarjetas por selección
 CREATE OR ALTER VIEW rpt.vw_BI_Tarjetas_Seleccion
 AS
 SELECT pa.Nombre AS Seleccion,

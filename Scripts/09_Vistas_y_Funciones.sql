@@ -75,68 +75,40 @@ LEFT JOIN (
 ) g ON g.IdPartido = p.IdPartido;
 GO
 
--- Vista: Tabla de posiciones de la fase de grupos (sólo partidos jugados)
+--Vista: Tabla de posiciones de la fase de grupos (sólo partidos jugados)
 CREATE OR ALTER VIEW op.vw_TablaPosiciones
 AS
 WITH Lineas AS (
-    SELECT
-        r.IdSeleccionLocal AS IdSeleccion,
-        r.GolesLocal AS GolesFavor,
-        r.GolesVisitante AS GolesContra
+    SELECT r.IdSeleccionLocal AS IdSeleccion, r.GolesLocal AS GF, r.GolesVisitante AS GC
     FROM op.vw_ResultadoPartido r
     WHERE r.Fase = 'Grupos' AND r.Jugado = 1
-
     UNION ALL
-
-    SELECT
-        r.IdSeleccionVisitante,
-        r.GolesVisitante,
-        r.GolesLocal
+    SELECT r.IdSeleccionVisitante, r.GolesVisitante, r.GolesLocal
     FROM op.vw_ResultadoPartido r
     WHERE r.Fase = 'Grupos' AND r.Jugado = 1
 ),
 Totales AS (
-    SELECT
-        s.IdSeleccion,
-        s.Grupo,
-        pa.Nombre AS Seleccion,
-        COUNT(l.IdSeleccion) AS PartidosJugados,
-
-        SUM(CASE WHEN l.GolesFavor > l.GolesContra THEN 1 ELSE 0 END) AS PartidosGanados,
-        SUM(CASE WHEN l.GolesFavor = l.GolesContra THEN 1 ELSE 0 END) AS PartidosEmpatados,
-        SUM(CASE WHEN l.GolesFavor < l.GolesContra THEN 1 ELSE 0 END) AS PartidosPerdidos,
-
-        ISNULL(SUM(l.GolesFavor), 0) AS GolesFavor,
-        ISNULL(SUM(l.GolesContra), 0) AS GolesContra
-
+    SELECT s.IdSeleccion,
+           s.Grupo,
+           pa.Nombre AS Seleccion,
+           COUNT(l.IdSeleccion) AS PJ,
+           SUM(CASE WHEN l.GF > l.GC THEN 1 ELSE 0 END) AS PG,
+           SUM(CASE WHEN l.GF = l.GC THEN 1 ELSE 0 END) AS PE,
+           SUM(CASE WHEN l.GF < l.GC THEN 1 ELSE 0 END) AS PP,
+           ISNULL(SUM(l.GF), 0) AS GF,
+           ISNULL(SUM(l.GC), 0) AS GC
     FROM op.Seleccion s
     INNER JOIN op.Pais pa ON pa.IdPais = s.IdPais
     LEFT JOIN Lineas l ON l.IdSeleccion = s.IdSeleccion
     WHERE s.Grupo IS NOT NULL
     GROUP BY s.IdSeleccion, s.Grupo, pa.Nombre
 )
-SELECT
-    Grupo,
-    ROW_NUMBER() OVER (
-        PARTITION BY Grupo
-        ORDER BY
-            PartidosGanados * 3 + PartidosEmpatados DESC,
-            GolesFavor - GolesContra DESC,
-            GolesFavor DESC,
-            Seleccion
-    ) AS Posicion,
-
-    IdSeleccion,
-    Seleccion,
-    PartidosJugados,
-    PartidosGanados,
-    PartidosEmpatados,
-    PartidosPerdidos,
-    GolesFavor,
-    GolesContra,
-
-    GolesFavor - GolesContra AS DiferenciaGoles,
-    PartidosGanados * 3 + PartidosEmpatados AS Puntos
-
+SELECT Grupo,
+       ROW_NUMBER() OVER (PARTITION BY Grupo ORDER BY PG * 3 + PE DESC, GF - GC DESC, GF DESC, Seleccion) AS Posicion,
+       IdSeleccion,
+       Seleccion,
+       PJ, PG, PE, PP, GF, GC,
+       GF - GC AS DG,
+       PG * 3 + PE AS Pts
 FROM Totales;
 GO

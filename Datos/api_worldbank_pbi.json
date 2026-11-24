@@ -1,9 +1,1 @@
-[
-  { "page": 1, "pages": 1, "per_page": 50, "total": 4 },
-  [
-    { "country": { "id": "AR", "value": "Argentina" }, "date": "2023", "value": 13709.04 },
-    { "country": { "id": "BR", "value": "Brazil" }, "date": "2023", "value": 10043.62 },
-    { "country": { "id": "US", "value": "United States" }, "date": "2023", "value": 81695.19 },
-    { "country": { "id": "IT", "value": "Italy" }, "date": "2023", "value": 38373.17 }
-  ]
-]
+[{"page":1,"pages":1,"per_page":50,"total":6,"sourceid":"2","lastupdated":"2026-11-11"},[{"indicator":{"id":"NY.GDP.PCAP.CD","value":"GDP per capita (current US$)"},"country":{"id":"AR","value":"Argentina"},"countryiso3code":"ARG","date":"2023","value":14261.8465667948,"unit":"","obs_status":"","decimal":1},{"indicator":{"id":"NY.GDP.PCAP.CD","value":"GDP per capita (current US$)"},"country":{"id":"BR","value":"Brazil"},"countryiso3code":"BRA","date":"2023","value":10377.5892792557,"unit":"","obs_status":"","decimal":1},{"indicator":{"id":"NY.GDP.PCAP.CD","value":"GDP per capita (current US$)"},"country":{"id":"ES","value":"Spain"},"countryiso3code":"ESP","date":"2023","value":33493.2225409111,"unit":"","obs_status":"","decimal":1},{"indicator":{"id":"NY.GDP.PCAP.CD","value":"GDP per capita (current US$)"},"country":{"id":"FR","value":"France"},"countryiso3code":"FRA","date":"2023","value":44700.1384177544,"unit":"","obs_status":"","decimal":1},{"indicator":{"id":"NY.GDP.PCAP.CD","value":"GDP per capita (current US$)"},"country":{"id":"IT","value":"Italy"},"countryiso3code":"ITA","date":"2023","value":39279.699782164,"unit":"","obs_status":"","decimal":1},{"indicator":{"id":"NY.GDP.PCAP.CD","value":"GDP per capita (current US$)"},"country":{"id":"US","value":"United States"},"countryiso3code":"USA","date":"2023","value":82586.7847707894,"unit":"","obs_status":"","decimal":1}]]

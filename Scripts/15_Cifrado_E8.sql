@@ -2,25 +2,21 @@
    Universidad: Universidad Nacional de La Matanza (UNLaM)
    Materia: 3641 - Bases de Datos Aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: ENTREGA 8 - Cifrado de datos sensibles (AES_256) mediante
-             Master Key, Certificado y Clave Simétrica.
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Resumen: Cifrado de datos (AES_256) a través de Master Key, Certificado y Clave Simétrica.
              Aplica cifrado a la columna Documento de op.Jugador,
-             op.CuerpoTecnico y op.Arbitro, elimina el texto plano y
-             actualiza los SPs afectados.
-             Ejecutar después de 01 a 14.
+             op.CuerpoTecnico y op.Arbitro, elimina el texto plano y actualiza los SPs afectados.
 ========================================================================= */
 
 USE Mundial2026;
 GO
 
--- =========================================================================
+
 -- 1. INFRAESTRUCTURA DE CIFRADO (Master Key -> Certificado -> Clave AES_256)
--- =========================================================================
+
 IF NOT EXISTS (SELECT 1 FROM sys.symmetric_keys WHERE name = '##MS_DatabaseMasterKey##')
 BEGIN
-    CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'Mundial2026#MasterKey!Strong';
+    CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'Ninguna señal del gato?';
 END
 GO
 
@@ -39,9 +35,8 @@ BEGIN
 END
 GO
 
--- =========================================================================
--- 2. AGREGAR COLUMNAS CIFRADAS (VARBINARY) EN TABLAS CON DATOS SENSIBLES
--- =========================================================================
+
+--AGREGAR COLUMNAS CIFRADAS (VARBINARY) EN TABLAS CON DATOS SENSIBLES
 IF COL_LENGTH('op.Jugador', 'DocumentoCifrado') IS NULL
     ALTER TABLE op.Jugador ADD DocumentoCifrado VARBINARY(256) NULL;
 
@@ -52,9 +47,7 @@ IF COL_LENGTH('op.Arbitro', 'DocumentoCifrado') IS NULL
     ALTER TABLE op.Arbitro ADD DocumentoCifrado VARBINARY(256) NULL;
 GO
 
--- =========================================================================
--- 3. SP PARA CIFRAR DATOS EXISTENTES Y ELIMINAR COLUMNAS EN TEXTO PLANO
--- =========================================================================
+--SP PARA CIFRAR DATOS EXISTENTES Y ELIMINAR COLUMNAS EN TEXTO PLANO
 CREATE OR ALTER PROCEDURE cfg.usp_MigrarYCifrarDatosSensibles
 AS
 BEGIN
@@ -89,9 +82,8 @@ GO
 EXEC cfg.usp_MigrarYCifrarDatosSensibles;
 GO
 
--- =========================================================================
--- 4. ACTUALIZAR SPs AFECTADOS PARA GUARDAR SIEMPRE CIFRADO
--- =========================================================================
+
+--ACTUALIZAR SPs AFECTADOS PARA GUARDAR SIEMPRE CIFRADO
 CREATE OR ALTER PROCEDURE op.usp_AltaJugador
     @IdPlantel INT, @IdClub INT, @Nombre VARCHAR(100), @Apellido VARCHAR(100), @Nacionalidad VARCHAR(50),
     @Documento VARCHAR(30) = NULL, @FechaNacimiento DATE = NULL, @PosicionHabitual VARCHAR(50) = NULL, @Dorsal INT = NULL
@@ -202,9 +194,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
--- 5. SP DE CONSULTA DESCIFRADA (SÓLO PARA ROLES AUTORIZADOS)
--- =========================================================================
+
+--SP DE CONSULTA DESCIFRADA (SÓLO PARA ROLES AUTORIZADOS)
 CREATE OR ALTER PROCEDURE op.usp_ConsultarDatosSensibles
     @Entidad VARCHAR(20) = 'Jugador'
 AS
