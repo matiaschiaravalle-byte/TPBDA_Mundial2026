@@ -2,12 +2,10 @@
    Universidad: Universidad Nacional de La Matanza (UNLaM)
    Materia: 3641 - Bases de Datos Aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: ENTREGA 7 - SP transaccional op.usp_FinalizarPartido.
-             Registra público y alargue, consolida el resultado final en
-             op.Partido y descuenta 1 partido de las suspensiones activas
-             de ambas selecciones (originadas en partidos anteriores).
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Objetivo: SP transaccional op.usp_FinalizarPartido.
+             Registra público y alargue, carga el resultado final en
+             op.Partido y descuenta 1 partido de las suspensiones activas de ambas selecciones.
 ========================================================================= */
 
 USE Mundial2026;

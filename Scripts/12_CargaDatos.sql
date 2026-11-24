@@ -2,18 +2,13 @@
    Universidad: Universidad Nacional de La Matanza (UNLaM)
    Materia: 3641 - Bases de Datos Aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: ENTREGA 7 - Carga de datos representativos (Seed Data) para los
-             reportes y criterios de aceptación del TP:
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Objetivo: Carga de datos para los reportes:
              - 16 selecciones en 4 grupos, cada una con 24 convocados y CT.
              - 9 sedes en 3 países y 4 husos horarios distintos, con 4 espacios.
              - Fase de grupos completa + cuartos, semifinales, 3er puesto y final.
              - 18 árbitros, 8 anunciantes de 7 países con campañas y piezas.
-             - Todos los casos obligatorios del enunciado.
-             Recorridos implementados con bucles WHILE sobre tablas variables.
-             El script es idempotente: si los datos ya fueron cargados, no hace nada.
-             Ejecutar después de 01 a 11.
+             - Todos los casos obligatorios del enunciado..
 ========================================================================= */
 
 USE Mundial2026;

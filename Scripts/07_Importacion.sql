@@ -2,26 +2,22 @@
    Universidad: Universidad Nacional de La Matanza (UNLaM)
    Materia: 3641 - Bases de Datos Aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: ENTREGA 6 - Procesos de Importación Masiva (T-SQL puro).
-             Incluye:
-             - Tablas de Staging, Históricos, Cotizaciones y Log (con IF OBJECT_ID).
-             - Función auxiliar de conversión de moneda (cfg.fn_ConvertirMoneda).
-             - Formato 1 (CSV): Jugadores y Exhibiciones (Upsert + Histórico + Errores parciales).
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Explicación: El script lleva a cabo los procesos de importación.
+             - Se crearon tablas auxiliares.
+             - Se implementó una funcion de conversión de moneda.
+             - Formato 1 (CSV): Jugadores y Exhibiciones.
              - Formato 2 (XML): Sedes (OPENROWSET + .nodes(), Upsert + Errores parciales).
-             - Scraping (CSV de Wikipedia): Árbitros (Upsert + Errores parciales).
-             - API 1 (Frankfurter JSON): Cotizaciones de moneda (OPENJSON, Upsert).
-             - API 2 (Banco Mundial JSON): PBI per cápita por país (OPENJSON, Upsert).
+             - Scraping (CSV de Wikipedia): Árbitros.
+             - API 1 (Frankfurter JSON): Cotizaciones de moneda.
+             - API 2 (Banco Mundial JSON): PBI per cápita por país.
 ========================================================================= */
 
 USE Mundial2026;
 GO
 
--- =========================================================================
--- PARTE 1: TABLAS AUXILIARES (VALIDANDO EXISTENCIA PREVIA)
--- =========================================================================
 
+--TABLAS AUXILIARES
 IF OBJECT_ID('op.STG_Jugadores', 'U') IS NULL
 CREATE TABLE op.STG_Jugadores (
     Nombre VARCHAR(100),
@@ -93,10 +89,7 @@ CREATE TABLE cfg.Log_Importacion (
 );
 GO
 
--- =========================================================================
--- PARTE 2: FUNCIÓN AUXILIAR DE CONVERSIÓN DE MONEDA
--- =========================================================================
-
+--FUNCIÓN DE CONVERSIÓN DE MONEDA
 CREATE OR ALTER FUNCTION cfg.fn_ConvertirMoneda (
     @Monto DECIMAL(18,2),
     @MonedaOrigen VARCHAR(10)
@@ -115,10 +108,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
--- PARTE 3: SP 1 (CSV) - IMPORTACIÓN DE JUGADORES (REUTILIZA SP DE E5)
--- =========================================================================
 
+--SP 1 (CSV) - IMPORTACIÓN DE JUGADORES
 CREATE OR ALTER PROCEDURE cfg.usp_ImportarJugadores_CSV
     @RutaArchivo VARCHAR(255),
     @Delimitador VARCHAR(5) = ';'
@@ -127,7 +118,7 @@ BEGIN
     SET NOCOUNT ON;
 
     IF @RutaArchivo IS NULL OR LTRIM(RTRIM(@RutaArchivo)) = ''
-        THROW 50020, 'Debe especificar la ruta del archivo CSV.', 1;
+        THROW 50020, 'Falta la ruta del archivo CSV.', 1;
 
     TRUNCATE TABLE op.STG_Jugadores;
 
@@ -227,10 +218,7 @@ BEGIN
 END;
 GO
 
--- =========================================================================
--- PARTE 4: SP 2 (CSV) - IMPORTACIÓN DE EXHIBICIONES (CONVERSIÓN DE MONEDA)
--- =========================================================================
-
+--SP 2 (CSV) - IMPORTACIÓN DE EXHIBICIONES (CONVERSIÓN DE MONEDA)
 CREATE OR ALTER PROCEDURE cfg.usp_ImportarExhibiciones_CSV
     @RutaArchivo VARCHAR(255),
     @Delimitador VARCHAR(5) = ';'
@@ -338,10 +326,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
--- PARTE 5: SP 3 (FORMATO 2: XML) - IMPORTACIÓN DE SEDES DESDE XML
--- =========================================================================
 
+--SP 3 (FORMATO 2: XML) - IMPORTACIÓN DE SEDES DESDE XML
 CREATE OR ALTER PROCEDURE cfg.usp_ImportarSedes_XML
     @RutaArchivo VARCHAR(255)
 AS
@@ -419,12 +405,11 @@ BEGIN
 END;
 GO
 
--- =========================================================================
--- PARTE 6: SP 4 (SCRAPING WIKIPEDIA) - IMPORTACIÓN DE ÁRBITROS
+
+--SP 4 (SCRAPING WIKIPEDIA) - IMPORTACIÓN DE ÁRBITROS
 -- Origen: https://en.wikipedia.org/wiki/List_of_FIFA_World_Cup_referees
--- Técnica: Scraping HTML con PowerShell (Invoke-WebRequest + Regex de tablas)
+-- Scraping HTML con PowerShell (Invoke-WebRequest + Regex de tablas)
 --          mediante Datos/Obtener_Datos_Externos.ps1 -> arbitros_scraping.csv
--- =========================================================================
 
 CREATE OR ALTER PROCEDURE cfg.usp_ImportarArbitros_Scraping_CSV
     @RutaArchivo VARCHAR(255),
@@ -499,11 +484,10 @@ BEGIN
 END;
 GO
 
--- =========================================================================
--- PARTE 7: SP 5 (API 1: FRANKFURTER JSON) - COTIZACIONES DE MONEDA
+
+-- SP 5 (API 1: FRANKFURTER JSON) - COTIZACIONES DE MONEDA
 -- Fuente: https://api.frankfurter.app/latest?from=USD&to=EUR,BRL,MXN
--- Clave: NO requiere API key | Límite: uso justo sin rate limit estricto.
--- =========================================================================
+-- mo necesita API key, y tampoco tiene un rate limit estricto.
 
 CREATE OR ALTER PROCEDURE cfg.usp_ImportarCotizaciones_API_JSON
     @RutaArchivoJSON VARCHAR(255),
@@ -562,11 +546,10 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- PARTE 8: SP 6 (API 2: BANCO MUNDIAL JSON) - PBI PER CÁPITA POR PAÍS
 -- Fuente: https://api.worldbank.org/v2/country/ARG;BRA;USA;ITA/indicator/NY.GDP.PCAP.CD?format=json&date=2023
--- Clave: NO requiere API key | Límite: acceso público abierto (recomendado < 100 req/min).
--- =========================================================================
+-- No requiere api key, y es de acceso público.
 
 CREATE OR ALTER PROCEDURE cfg.usp_ImportarPbi_API_JSON
     @RutaArchivoJSON VARCHAR(255)

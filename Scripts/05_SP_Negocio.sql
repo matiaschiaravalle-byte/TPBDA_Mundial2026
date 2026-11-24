@@ -2,18 +2,15 @@
    Universidad: Universidad Nacional de La Matanza (UNLaM)
    Materia: 3641 - Bases de Datos Aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: Procedimientos Almacenados de Lógica de Negocio (transaccionales,
-             set-based): Alineaciones, Cambios (con tope de cambios y
-             ventanas), Convocatorias, Tarjetas/Suspensiones, Goles/Resultado,
-             Árbitros (conflicto ético + advertencia) y Publicidad priorizada.
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Objetivo: SPs de lógica de negocio (partidos) : Alineaciones, Cambios, Convocatorias, Tarjetas/Suspensiones,
+   Goles/Resultado, Árbitros y Publicidad.
 ========================================================================= */
 
 USE Mundial2026;
 GO
 
--- 1. Registrar Cabecera de Alineación (Formación y Esquema Táctico)
+--Registrar Cabecera de Alineación (Formación y Esquema Táctico)
 CREATE OR ALTER PROCEDURE op.usp_RegistrarAlineacion
     @IdPartido INT,
     @IdPlantel INT,
@@ -35,7 +32,7 @@ BEGIN
 END;
 GO
 
--- 2. Registrar Jugador en Alineación (Titular o Banco de Suplentes, validando suspensión activa)
+--Registrar Jugador en Alineación (Titular o Banco de Suplentes, validando suspensión activa)
 CREATE OR ALTER PROCEDURE op.usp_RegistrarAlineacionJugador
     @IdAlineacion INT,
     @IdJugador INT,
@@ -63,7 +60,7 @@ BEGIN
 END;
 GO
 
--- 3. Registrar Cambio de Jugador (valida máximo de cambios: 5/6 y máximo de ventanas: 3/4)
+--Registrar Cambio de Jugador (valida máximo de cambios: 5/6 y máximo de ventanas: 3/4)
 CREATE OR ALTER PROCEDURE op.usp_RegistrarCambioJugador
     @IdPartido INT,
     @IdJugadorSaliente INT,
@@ -127,7 +124,7 @@ BEGIN
 END;
 GO
 
--- 4. Modificación de Convocatoria (Altas/Bajas de último momento)
+--Modificación de Convocatoria (Altas/Bajas de último momento)
 CREATE OR ALTER PROCEDURE op.usp_ModificarConvocatoria
     @IdConvocado INT,
     @Tipo VARCHAR(10),
@@ -153,7 +150,7 @@ BEGIN
 END;
 GO
 
--- 5. Registrar Tarjeta y Calcular Suspensión (persiste en op.Suspension)
+--Registrar Tarjeta y Calcular Suspensión (persiste en op.Suspension)
 CREATE OR ALTER PROCEDURE op.usp_RegistrarTarjeta_Y_CalcularSuspension
     @IdPartido INT,
     @IdJugador INT,
@@ -226,7 +223,7 @@ BEGIN
 END;
 GO
 
--- 6. Registrar Gol y Actualizar Resultado (marcador Local - Visitante)
+--Registrar Gol y Actualizar Resultado (marcador Local - Visitante)
 CREATE OR ALTER PROCEDURE op.usp_RegistrarGol_Y_ActualizarResultado
     @IdPartido INT,
     @IdJugadorAnotador INT,
@@ -274,7 +271,7 @@ BEGIN
 END;
 GO
 
--- 7. Designación de Árbitros (5 roles + Validación Ética + Advertencia desde Dieciseisavos)
+--Designación de Árbitros (5 roles + Validación Ética + Advertencia desde Dieciseisavos)
 CREATE OR ALTER PROCEDURE op.usp_DesignarArbitros
     @IdPartido INT,
     @IdArbitroPrincipal INT,
@@ -325,7 +322,7 @@ BEGIN
 END;
 GO
 
--- 8. Asignar Publicidad (Priorización: Países del partido -> Mayor PBI -> Prime Time)
+--Asignar Publicidad (Priorización: Países del partido -> Mayor PBI -> Prime Time)
 CREATE OR ALTER PROCEDURE op.usp_AsignarPublicidadPartido
     @IdPartido INT,
     @IdSede INT

@@ -2,19 +2,14 @@
    Universidad: Universidad Nacional de La Matanza (UNLaM)
    Materia: 3641 - Bases de Datos Aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: Procedimientos Almacenados de ABM (Alta, Modificar, Baja) para
-             todas las tablas del sistema Mundial2026 (33 tablas x 3 = 99 SPs).
-             Convención: <esquema>.usp_<Alta|Modificar|Baja><Tabla>.
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Explicación: Procedimientos Almacenados de ABM (Alta, Modificar, Baja) para todas las tablas del sistema Mundial2026 
 ========================================================================= */
 
 USE Mundial2026;
 GO
 
--- =========================================================================
 -- 1. op.Pais
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaPais
     @Nombre VARCHAR(100), @HorarioUTC VARCHAR(10) = NULL, @OffsetUTC INT = 0, @PbiPerCapita DECIMAL(12,2) = NULL
 AS
@@ -51,9 +46,7 @@ BEGIN
 END;
 GO
 
--- =========================================================================
 -- 2. op.Sede
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaSede
     @IdPais INT, @NombreEstadio VARCHAR(100), @Ciudad VARCHAR(100), @UsoHorario VARCHAR(10), @Capacidad INT
 AS
@@ -125,9 +118,7 @@ BEGIN
 END;
 GO
 
--- =========================================================================
 -- 4. cfg.Confederacion
--- =========================================================================
 CREATE OR ALTER PROCEDURE cfg.usp_AltaConfederacion
     @Nombre VARCHAR(100), @Continente VARCHAR(100)
 AS
@@ -158,9 +149,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 5. op.Seleccion
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaSeleccion
     @IdPais INT, @IdConfederacion INT, @Grupo CHAR(1) = NULL
 AS
@@ -195,9 +185,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 6. op.Partido
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaPartido
     @IdSede INT, @IdSeleccionLocal INT, @IdSeleccionVisitante INT, @Fecha DATE,
     @HoraLocal TIME, @HoraUTC TIME, @Fase VARCHAR(50), @PublicoAsistente INT = NULL,
@@ -241,9 +230,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 7. op.Plantel
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaPlantel
     @IdSeleccion INT
 AS
@@ -274,9 +262,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 8. op.Jugador
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaJugador
     @IdPlantel INT, @IdClub INT, @Nombre VARCHAR(100), @Apellido VARCHAR(100), @Nacionalidad VARCHAR(50),
     @Documento VARCHAR(30) = NULL, @FechaNacimiento DATE = NULL, @PosicionHabitual VARCHAR(50) = NULL, @Dorsal INT = NULL
@@ -325,9 +312,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 9. op.Convocado
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaConvocado
     @IdSeleccion INT, @IdJugador INT
 AS
@@ -361,9 +347,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 10. op.Modificacion_Convocatoria
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaModificacion_Convocatoria
     @IdConvocado INT, @Tipo VARCHAR(10), @Motivo VARCHAR(255), @Fecha DATE
 AS
@@ -398,9 +383,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 11. op.CuerpoTecnico
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaCuerpoTecnico
     @IdSeleccion INT, @IdPlantel INT, @Nombre VARCHAR(100), @Tipo VARCHAR(50),
     @Documento VARCHAR(30) = NULL, @FechaNacimiento DATE = NULL
@@ -436,9 +420,7 @@ BEGIN
 END;
 GO
 
--- =========================================================================
 -- 12. op.Alineacion
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaAlineacion
     @IdPartido INT, @IdPlantel INT, @EsquemaTactico VARCHAR(20) = NULL
 AS
@@ -472,9 +454,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 13. op.Alineacion_Jugador
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaAlineacion_Jugador
     @IdAlineacion INT, @IdJugador INT, @Posicion VARCHAR(50), @EsTitular BIT = 1, @Dorsal INT = NULL
 AS
@@ -514,9 +495,7 @@ BEGIN
 END;
 GO
 
--- =========================================================================
 -- 14. op.Cambios
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaCambios
     @IdPartido INT, @IdJugadorSaliente INT, @IdJugadorIngresante INT, @Minuto INT, @Motivo VARCHAR(255) = NULL
 AS
@@ -552,9 +531,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 15. cfg.Regla_Suspencion
--- =========================================================================
 CREATE OR ALTER PROCEDURE cfg.usp_AltaRegla_Suspencion
     @Canti_requerida INT, @Partidos_suspension INT, @Fase_Limpieza VARCHAR(50) = NULL
 AS
@@ -587,9 +565,7 @@ BEGIN
 END;
 GO
 
--- =========================================================================
 -- 16. cfg.Tipo_Tarjeta
--- =========================================================================
 CREATE OR ALTER PROCEDURE cfg.usp_AltaTipo_Tarjeta
     @IdTipoTarjeta INT, @IdRegla INT = NULL, @Descripcion VARCHAR(50)
 AS
@@ -620,9 +596,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 17. op.Tarjeta
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaTarjeta
     @IdPartido INT, @IdJugador INT, @IdTipoTarjeta INT, @Minuto INT, @Motivo VARCHAR(255)
 AS
@@ -654,9 +629,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 18. op.Suspension
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaSuspension
     @IdJugador INT, @IdPartidoOrigen INT, @PartidosRestantes INT, @Motivo VARCHAR(100), @Activa BIT = 1
 AS
@@ -688,9 +662,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 19. cfg.Tipo_Jugada
--- =========================================================================
 CREATE OR ALTER PROCEDURE cfg.usp_AltaTipo_Jugada
     @IdTipoJugada INT, @Descripcion VARCHAR(50)
 AS
@@ -721,9 +694,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 20. cfg.Periodo
--- =========================================================================
 CREATE OR ALTER PROCEDURE cfg.usp_AltaPeriodo
     @IdPeriodo INT, @Descripcion VARCHAR(50), @MinutoInicio INT, @MinutoFin INT
 AS
@@ -754,9 +726,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 21. op.Anotacion
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaAnotacion
     @IdPartido INT, @IdJugadorAnotador INT, @IdJugadorAsistidor INT = NULL, @IdTipoJugada INT, @IdPeriodo INT, @Minuto INT
 AS
@@ -789,9 +760,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 22. op.Arbitro
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaArbitro
     @Nombre VARCHAR(100), @Apellido VARCHAR(100), @Nacionalidad VARCHAR(50), @Categoria VARCHAR(50),
     @Documento VARCHAR(30) = NULL, @FechaNacimiento DATE = NULL
@@ -829,9 +799,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 23. op.Lista_Arbitros
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaLista_Arbitros
     @IdPartido INT, @IdArbitroPrincipal INT, @IdArbitroAsistente1 INT, @IdArbitroAsistente2 INT, @IdCuartoArbitro INT, @IdArbitroVAR INT
 AS
@@ -866,9 +835,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 24. op.Informe_Arbitro
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaInforme_Arbitro
     @IdPartido INT, @IdArbitro INT, @Tipo VARCHAR(30), @Descripcion VARCHAR(255)
 AS
@@ -899,9 +867,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 25. cfg.Idioma
--- =========================================================================
 CREATE OR ALTER PROCEDURE cfg.usp_AltaIdioma
     @Descripcion VARCHAR(50)
 AS
@@ -932,9 +899,7 @@ BEGIN
 END;
 GO
 
--- =========================================================================
 -- 26. cfg.Pais_Idioma
--- =========================================================================
 CREATE OR ALTER PROCEDURE cfg.usp_AltaPais_Idioma
     @IdPais INT, @IdIdioma INT
 AS
@@ -964,9 +929,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 27. cfg.Arbitro_Idioma
--- =========================================================================
 CREATE OR ALTER PROCEDURE cfg.usp_AltaArbitro_Idioma
     @IdArbitro INT, @IdIdioma INT
 AS
@@ -996,9 +960,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 28. cfg.Anunciante
--- =========================================================================
 CREATE OR ALTER PROCEDURE cfg.usp_AltaAnunciante
     @IdPais INT, @RazonSocial VARCHAR(100)
 AS
@@ -1029,9 +992,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 29. cfg.Campania
--- =========================================================================
 CREATE OR ALTER PROCEDURE cfg.usp_AltaCampania
     @IdAnunciante INT, @Nombre VARCHAR(100), @Descripcion VARCHAR(255) = NULL
 AS
@@ -1062,9 +1024,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 30. cfg.Pieza_Contenido
--- =========================================================================
 CREATE OR ALTER PROCEDURE cfg.usp_AltaPieza_Contenido
     @IdCampania INT, @IdIdioma INT, @Duracion INT, @Tarifa DECIMAL(10,2) = 15000.00
 AS
@@ -1095,9 +1056,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 31. cfg.Pieza_Pais
--- =========================================================================
 CREATE OR ALTER PROCEDURE cfg.usp_AltaPieza_Pais
     @IdPieza INT, @IdPais INT
 AS
@@ -1127,9 +1087,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 32. op.EspacioPublicitario
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaEspacioPublicitario
     @IdSede INT, @Motivo VARCHAR(100)
 AS
@@ -1161,9 +1120,8 @@ BEGIN
 END;
 GO
 
--- =========================================================================
+
 -- 33. op.Exhibicion
--- =========================================================================
 CREATE OR ALTER PROCEDURE op.usp_AltaExhibicion
     @IdEspacio INT, @IdPartido INT, @IdPieza INT, @Tarifa DECIMAL(10,2)
 AS

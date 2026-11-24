@@ -1,12 +1,10 @@
-/* =========================================================================
+/* 
    Universidad: Universidad Nacional de La Matanza (UNLaM)
-   Materia: 3641 - Bases de Datos Aplicada
+   Materia: 3641 - Bases de satos aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: Creación de la base de datos Mundial2026 y esquemas cfg y op,
-             validando la existencia de objetos antes de crearlos.
-========================================================================= */
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Explicación: Creación de la base de datos Mundial2026 y esquemas cfg (de configuración), op (operaciones) y rpt (para reportes).
+*/
 
 USE master;
 GO

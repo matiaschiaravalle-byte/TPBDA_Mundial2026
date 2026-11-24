@@ -2,19 +2,16 @@
    Universidad: Universidad Nacional de La Matanza (UNLaM)
    Materia: 3641 - Bases de Datos Aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: Script de TESTING 1:1 para 03_SP_ABM.sql.
-             Incluye casos exitosos (con SELECT de evidencia) y casos de
-             validaciones fallidas (atrapados con TRY/CATCH).
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Explicación: Script de testing para 03_SP_ABM.sql.
 ========================================================================= */
 
 USE Mundial2026;
 GO
 
-PRINT '================ TEST 04: SPs ABM (EXITOSOS) ================';
+PRINT '================ Ejemplos de ingresos correctos ================';
 
--- [TEST 1 - ÉXITO] Alta de Países, Confederación, Sede, Selecciones, Partidos, Planteles y Clubes
+-- Alta de Países, Confederación, Sede, Selecciones, Partidos, Planteles y Clubes
 -- Resultado esperado: Se insertan correctamente sin errores usando exclusivamente SPs ABM.
 EXEC op.usp_AltaPais 'Argentina', 'UTC-3', -3, 13700.00;
 EXEC op.usp_AltaPais 'Brasil', 'UTC-3', -3, 10400.00;
@@ -32,7 +29,7 @@ EXEC op.usp_AltaPlantel 2;
 EXEC op.usp_AltaClub 'Inter Miami';
 EXEC op.usp_AltaClub 'Flamengo';
 
--- [TEST 2 - ÉXITO] Alta, Modificación y Baja de Jugador (ABM completo)
+-- Alta, Modificación y Baja de Jugador (ABM completo)
 -- Resultado esperado: Se dan de alta 3 jugadores, se modifica dorsal del 1ro y se da de baja el 3ro.
 EXEC op.usp_AltaJugador 1, 1, 'Lionel', 'Messi', 'Argentina', '33016244', '1987-06-24', 'Delantero', 10;
 EXEC op.usp_AltaJugador 1, 1, 'Ángel', 'Di María', 'Argentina', '33500111', '1988-02-14', 'Mediocampista', 11;
@@ -47,7 +44,7 @@ SELECT * FROM op.Sede;
 SELECT * FROM op.Partido;
 SELECT * FROM op.Jugador;
 
--- [TEST 3 - ÉXITO] Alta de catálogos necesarios para tests de negocio
+-- Alta de catálogos necesarios para tests de negocio
 -- Resultado esperado: Se cargan reglas, tipos de tarjeta, jugadas, períodos, árbitros y publicidad.
 EXEC cfg.usp_AltaRegla_Suspencion 2, 1, 'Semifinal';
 EXEC cfg.usp_AltaTipo_Tarjeta 1, 1, 'Amarilla';
@@ -82,47 +79,47 @@ EXEC op.usp_AltaEspacioPublicitario 1, 'Panel Sur';
 EXEC op.usp_AltaEspacioPublicitario 1, 'Panel Este';
 EXEC op.usp_AltaEspacioPublicitario 1, 'Panel Oeste';
 
-PRINT '================ TEST 04: VALIDACIONES FALLIDAS ================';
+PRINT '================ Ejemplos de ingresos incorrectos ================';
 
--- [TEST ERROR 1] País con nombre vacío y OffsetUTC fuera de rango
+-- País con nombre vacío y OffsetUTC fuera de rango
 -- Resultado esperado: THROW 50101 agrupando ambos mensajes de error.
 BEGIN TRY EXEC op.usp_AltaPais '', 'UTC+99', 99, 1000; END TRY BEGIN CATCH PRINT 'OK Error 1: ' + ERROR_MESSAGE(); END CATCH
 
--- [TEST ERROR 2] Sede con capacidad <= 0 y país inexistente
+-- Sede con capacidad <= 0 y país inexistente
 -- Resultado esperado: THROW 50104 indicando país inexistente y capacidad inválida.
 BEGIN TRY EXEC op.usp_AltaSede 999, 'Estadio Fantasma', 'X', 'UTC', -100; END TRY BEGIN CATCH PRINT 'OK Error 2: ' + ERROR_MESSAGE(); END CATCH
 
--- [TEST ERROR 3] Partido con misma selección como local y visitante
+-- Partido con misma selección como local y visitante
 -- Resultado esperado: THROW 50116 indicando que local y visitante no pueden ser iguales.
 BEGIN TRY EXEC op.usp_AltaPartido 1, 1, 1, '2026-06-25', '15:00', '18:00', 'Grupos'; END TRY BEGIN CATCH PRINT 'OK Error 3: ' + ERROR_MESSAGE(); END CATCH
 
--- [TEST ERROR 4] Jugador con nombre vacío y club inexistente
+-- Jugador con nombre vacío y club inexistente
 -- Resultado esperado: THROW 50001 agrupando errores de club y nombre.
 BEGIN TRY EXEC op.usp_AltaJugador 1, 999, '', 'Test', 'Argentina'; END TRY BEGIN CATCH PRINT 'OK Error 4: ' + ERROR_MESSAGE(); END CATCH
 
--- [TEST ERROR 5] Baja de jugador inexistente
+-- Baja de jugador inexistente
 -- Resultado esperado: THROW 50004 indicando que el jugador no existe.
 BEGIN TRY EXEC op.usp_BajaJugador 9999; END TRY BEGIN CATCH PRINT 'OK Error 5: ' + ERROR_MESSAGE(); END CATCH
 
--- [TEST ERROR 6] Cuerpo técnico con tipo inválido
+-- Cuerpo técnico con tipo inválido
 -- Resultado esperado: THROW 50128 indicando que debe ser DT o Ayudante.
 BEGIN TRY EXEC op.usp_AltaCuerpoTecnico 1, 1, 'Lionel Scaloni', 'Presidente'; END TRY BEGIN CATCH PRINT 'OK Error 6: ' + ERROR_MESSAGE(); END CATCH
 
--- [TEST ERROR 7] Modificación de convocatoria con tipo inválido
+-- Modificación de convocatoria con tipo inválido
 -- Resultado esperado: THROW 50125 indicando que debe ser Alta o Baja.
 BEGIN TRY EXEC op.usp_AltaModificacion_Convocatoria 999, 'Cambio', '', '2026-06-01'; END TRY BEGIN CATCH PRINT 'OK Error 7: ' + ERROR_MESSAGE(); END CATCH
 
--- [TEST ERROR 8] Cambio con minuto inválido y mismo jugador
+-- Cambio con minuto inválido y mismo jugador
 -- Resultado esperado: THROW 50137 agrupando minuto inválido y mismo jugador.
 BEGIN TRY EXEC op.usp_AltaCambios 1, 1, 1, 200, 'Error'; END TRY BEGIN CATCH PRINT 'OK Error 8: ' + ERROR_MESSAGE(); END CATCH
 
--- [TEST ERROR 9] Quinto espacio publicitario en la misma sede (máximo 4)
+-- Quinto espacio publicitario en la misma sede (máximo 4)
 -- Resultado esperado: THROW 50185 impidiendo superar los 4 espacios por sede.
 BEGIN TRY EXEC op.usp_AltaEspacioPublicitario 1, 'Panel Extra'; END TRY BEGIN CATCH PRINT 'OK Error 9: ' + ERROR_MESSAGE(); END CATCH
 
--- [TEST ERROR 10] Pieza de contenido con tarifa negativa
+-- Pieza de contenido con tarifa negativa
 -- Resultado esperado: THROW 50181 indicando que duración y tarifa deben ser > 0.
 BEGIN TRY EXEC cfg.usp_AltaPieza_Contenido 1, 1, 30, -500; END TRY BEGIN CATCH PRINT 'OK Error 10: ' + ERROR_MESSAGE(); END CATCH
 
-PRINT '================ FIN TEST 04 ================';
+PRINT '================ FIN TEST ================';
 GO

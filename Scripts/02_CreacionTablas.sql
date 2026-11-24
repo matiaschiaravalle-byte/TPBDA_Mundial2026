@@ -1,17 +1,15 @@
 /* =========================================================================
    Universidad: Universidad Nacional de La Matanza (UNLaM)
-   Materia: 3641 - Bases de Datos Aplicada
+   Materia: 3641 - Bases de datos aplicada
    Fecha: Noviembre 2026
-   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli,
-                Agustín Nicolás Mussi Pulcini, Alex Uriel Ruiz
-   Objetivo: Creación de todas las tablas y restricciones del sistema
-             Mundial2026, validando existencia previa con OBJECT_ID.
+   Integrantes: Matías Ezequiel Chiaravalle, Nahuel Battistelli, Agustín Nicolás Mussi Pulcini
+   Explicación: Creación de todas las tablas y restricciones, validando que exista con OBJECT_ID.
 ========================================================================= */
 
 USE Mundial2026;
 GO
 
--- 1. Países, Sedes y Clubes
+-- Países, Sedes y Clubes
 IF OBJECT_ID('op.Pais', 'U') IS NULL
 CREATE TABLE op.Pais (
     IdPais INT IDENTITY(1,1) PRIMARY KEY,
@@ -37,7 +35,7 @@ CREATE TABLE op.Club (
     Nombre VARCHAR(100) NOT NULL
 );
 
--- 2. Confederaciones, Selecciones, Partidos, Planteles y Jugadores
+-- Confederaciones, Selecciones, Partidos, Planteles y Jugadores
 IF OBJECT_ID('cfg.Confederacion', 'U') IS NULL
 CREATE TABLE cfg.Confederacion (
     IdConfederacion INT IDENTITY(1,1) PRIMARY KEY,
@@ -88,7 +86,7 @@ CREATE TABLE op.Jugador (
     Dorsal INT NULL
 );
 
--- 3. Convocatorias y Modificaciones (Altas/Bajas)
+-- Convocatorias y Modificaciones (Altas/Bajas)
 IF OBJECT_ID('op.Convocado', 'U') IS NULL
 CREATE TABLE op.Convocado (
     IdConvocado INT IDENTITY(1,1) PRIMARY KEY,
@@ -105,7 +103,7 @@ CREATE TABLE op.Modificacion_Convocatoria (
     Fecha DATE NOT NULL
 );
 
--- 4. Cuerpo Técnico
+-- Cuerpo Técnico
 IF OBJECT_ID('op.CuerpoTecnico', 'U') IS NULL
 CREATE TABLE op.CuerpoTecnico (
     IdCuerpoTecnico INT IDENTITY(1,1) PRIMARY KEY,
@@ -117,7 +115,7 @@ CREATE TABLE op.CuerpoTecnico (
     FechaNacimiento DATE NULL
 );
 
--- 5. Alineación y Cambios
+-- Alineación y Cambios
 IF OBJECT_ID('op.Alineacion', 'U') IS NULL
 CREATE TABLE op.Alineacion (
     IdAlineacion INT IDENTITY(1,1) PRIMARY KEY,
@@ -146,7 +144,7 @@ CREATE TABLE op.Cambios (
     Motivo VARCHAR(255) NULL
 );
 
--- 6. Tarjetas, Reglas, Suspensiones y Goles (Anotaciones)
+-- Tarjetas, Reglas, Suspensiones y Goles (Anotaciones)
 IF OBJECT_ID('cfg.Regla_Suspencion', 'U') IS NULL
 CREATE TABLE cfg.Regla_Suspencion (
     IdRegla INT IDENTITY(1,1) PRIMARY KEY,
@@ -207,7 +205,7 @@ CREATE TABLE op.Anotacion (
     Minuto INT NOT NULL
 );
 
--- 7. Árbitros
+-- Árbitros
 IF OBJECT_ID('op.Arbitro', 'U') IS NULL
 CREATE TABLE op.Arbitro (
     IdArbitro INT IDENTITY(1,1) PRIMARY KEY,
@@ -240,7 +238,7 @@ CREATE TABLE op.Informe_Arbitro (
     Fecha DATE NOT NULL DEFAULT CAST(GETDATE() AS DATE)
 );
 
--- 8. Publicidad e Idiomas
+-- Publicidad e Idiomas
 IF OBJECT_ID('cfg.Idioma', 'U') IS NULL
 CREATE TABLE cfg.Idioma (
     IdIdioma INT IDENTITY(1,1) PRIMARY KEY,
